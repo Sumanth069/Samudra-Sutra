@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { cn } from '@/lib/utils'
 
 interface HeaderProps {
@@ -96,6 +97,9 @@ export function DashboardHeader({ alertCount, onRefresh }: HeaderProps) {
         >
           <RefreshCw className="h-4 w-4" />
         </Button>
+        
+        {/* Theme Toggler */}
+        <ThemeToggle />
 
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">

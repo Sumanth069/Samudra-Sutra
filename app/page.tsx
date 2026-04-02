@@ -1,152 +1,196 @@
 'use client'
 
+import { motion, Variants } from 'framer-motion'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Droplets, Shield, MapPin, Activity } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { ArrowRight, Waves, ShieldAlert, Navigation, Activity } from 'lucide-react'
+import { Globe } from '@/components/ui/globe'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
+
+// Animation variants
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+}
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+}
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground overflow-x-hidden">
-      <main className="flex-1">
-        
-        {/* HERO SECTION */}
-        <section className="w-full py-16 md:py-24 lg:py-32 xl:py-48 bg-muted/40 relative overflow-hidden flex items-center justify-center min-h-[85vh]">
-          <div className="container px-4 md:px-6 relative z-10">
-            <motion.div 
-               initial={{ opacity: 0, y: 40 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.9, ease: "easeOut" }}
-               className="flex flex-col items-center space-y-6 text-center"
-            >
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.2 }}
-                className="inline-flex items-center gap-2 rounded-full bg-blue-100/50 dark:bg-blue-900/30 px-3 py-1 text-sm font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-700/10 mb-4"
-              >
-                <Activity className="h-4 w-4 animate-pulse" /> Latest Data Sync Complete
-              </motion.div>
-
-              <div className="space-y-4">
-                <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-teal-400 to-emerald-600 drop-shadow-sm pb-2">
-                  Samudra Sutra
-                </h1>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl font-medium leading-relaxed">
-                  BlueTrace Intelligence System. A prevention-first, event-driven marine intelligence platform tracking pollution from land to ocean.
-                </p>
-              </div>
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="flex flex-col sm:flex-row gap-4 pt-8"
-              >
-                <Link href="/citizen/login">
-                  <Button size="lg" className="w-full sm:w-auto gap-2 bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-600/25 transition-all text-md px-8 py-6 h-auto">
-                    <MapPin className="h-5 w-5" />
-                    Citizen Report Portal
-                  </Button>
-                </Link>
-                <Link href="/admin/dashboard">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto gap-2 shadow-sm border-2 text-md px-8 py-6 h-auto hover:bg-muted transition-all">
-                    <Shield className="h-5 w-5" />
-                    Authority Login
-                  </Button>
-                </Link>
-              </motion.div>
-            </motion.div>
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-blue-500/30 overflow-x-hidden">
+      {/* Floating Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 lg:px-12 backdrop-blur-md bg-background/50 border-b border-border/40">
+        <div className="flex items-center gap-2">
+          <div className="bg-foreground text-background p-1.5 rounded-full">
+            <Waves className="w-5 h-5" />
           </div>
-          
-          {/* Decorative background elements */}
-          <motion.div 
-            animate={{ scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none" 
-          />
-          <motion.div 
-            animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" 
-          />
-        </section>
-
-        {/* FEATURES SECTION */}
-        <section className="w-full py-20 md:py-32 bg-background border-t border-muted/50">
-          <div className="container px-4 md:px-6">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Active Telemetry Mechanics</h2>
-              <p className="text-muted-foreground w-full max-w-2xl mx-auto text-lg">
-                Harnessing real-time models and civic feedback to safeguard marine ecosystems.
-              </p>
-            </motion.div>
-
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-              
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                className="flex flex-col items-center space-y-4 text-center p-8 rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-800"
-              >
-                <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40 rounded-2xl shadow-inner mb-2">
-                  <Droplets className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="text-xl font-bold">Flow Simulation</h3>
-                <p className="text-muted-foreground leading-relaxed">Models drainage systems to predict exactly when and where pollution will reach marine ecosystems.</p>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                className="flex flex-col items-center space-y-4 text-center p-8 rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-xl hover:border-emerald-200 dark:hover:border-emerald-800"
-              >
-                <div className="p-4 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/40 dark:to-emerald-800/40 rounded-2xl shadow-inner mb-2">
-                  <Shield className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <h3 className="text-xl font-bold">Citizen Verified Hub</h3>
-                <p className="text-muted-foreground leading-relaxed">Snap a photo and earn credits. Our AI verification ensures data authenticity while giving back to the community.</p>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                className="flex flex-col items-center space-y-4 text-center p-8 rounded-2xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-xl sm:col-span-2 lg:col-span-1 hover:border-purple-200 dark:hover:border-purple-800"
-              >
-                <div className="p-4 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 rounded-2xl shadow-inner mb-2">
-                  <MapPin className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold">Action-Driven Intel</h3>
-                <p className="text-muted-foreground leading-relaxed">Convert data patterns into automated deployment tasks for clearance teams before the pollution hits the ocean.</p>
-              </motion.div>
-
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="border-t py-8 md:py-6 bg-muted/20">
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row px-4 text-sm text-muted-foreground font-medium">
-          <p>Built for the future of our oceans.</p>
-          <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-foreground transition-colors hover:underline">Privacy Policy</Link>
-            <Link href="#" className="hover:text-foreground transition-colors hover:underline">Terms of Service</Link>
-          </div>
+          <span className="font-bold tracking-tight text-lg">Samudra Sutra</span>
         </div>
+        <ThemeToggle />
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-32 pb-16 px-4">
+        <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-center opacity-30 mt-32 pointer-events-none">
+          <Globe className="w-[800px] h-[800px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        </div>
+        
+        <div className="z-10 text-center max-w-5xl mx-auto space-y-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: "circOut" }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/30 backdrop-blur-sm text-sm font-medium text-muted-foreground"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+            Live Global Marine Intelligence
+          </motion.div>
+
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-[0.9] text-foreground"
+          >
+            Stop Pollution. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">
+              Before the Ocean.
+            </span>
+          </motion.h1>
+
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto font-medium"
+          >
+            A devastating prevention-first telemetry system. We rely on localized crowdsourcing and Gemini-powered forensics to intercept terrestrial waste at the source.
+          </motion.p>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8"
+          >
+            <Link href="/citizen/login" className="w-full sm:w-auto">
+              <button className="group relative w-full flex items-center justify-center gap-2 bg-foreground text-background px-8 py-4 rounded-full font-semibold text-lg overflow-hidden transition-transform hover:scale-105 active:scale-95">
+                <span className="relative z-10">Citizen Portal</span>
+                <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute inset-0 bg-blue-500 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
+              </button>
+            </Link>
+            
+            <Link href="/login" className="w-full sm:w-auto">
+              <button className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-lg border border-border bg-muted/20 hover:bg-muted/50 backdrop-blur-sm transition-all hover:border-foreground/30">
+                Authority Access
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Fact Parallax Section */}
+      <section className="relative py-32 px-6 border-y border-border/40 bg-muted/10">
+        <motion.div 
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center"
+        >
+          <div className="space-y-12">
+            <motion.div variants={fadeUp}>
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+                "We cannot clean the ocean <br className="hidden md:block"/>if the rivers <br className="hidden md:block"/>never stop bleeding."
+              </h2>
+              <div className="h-1 w-24 bg-foreground mt-8"></div>
+            </motion.div>
+            
+            <motion.p variants={fadeUp} className="text-xl text-muted-foreground font-medium max-w-lg leading-relaxed">
+              Every single hour, enough plastic to fill 11 Olympic-sized swimming pools enters the ocean. 
+              If we don't intercept it on land, it is gone forever.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div variants={fadeUp} className="bg-card border border-border p-8 rounded-3xl col-span-1 sm:col-span-2 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-7xl font-black mb-2 tracking-tighter">8M+</h3>
+              <p className="text-muted-foreground font-medium uppercase tracking-widest text-sm">Tons Annually</p>
+            </motion.div>
+            <motion.div variants={fadeUp} className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-5xl font-black mb-2 tracking-tighter text-blue-500">80%</h3>
+              <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs">Originates from Land</p>
+            </motion.div>
+            <motion.div variants={fadeUp} className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-5xl font-black mb-2 tracking-tighter text-red-500">1.5X</h3>
+              <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs">Multiplier per decade</p>
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* The Solution Grid */}
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16 md:text-center"
+          >
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">The Operating System for Oceans.</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">A brutalist, high-efficiency stack designed to locate and eliminate pollution signatures globally.</p>
+          </motion.div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {/* Feature 1 */}
+            <motion.div variants={fadeUp} className="group p-8 rounded-3xl bg-muted/20 border border-border hover:bg-card hover:border-foreground/20 transition-all duration-300">
+              <div className="w-12 h-12 bg-foreground text-background rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Navigation className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Hyperlocal Telemetry</h3>
+              <p className="text-muted-foreground">Citizens act as thousands of distributed sensor nodes, mapping exact GPS coordinates of shoreline anomalies.</p>
+            </motion.div>
+
+            {/* Feature 2 */}
+            <motion.div variants={fadeUp} className="group p-8 rounded-3xl bg-muted/20 border border-border hover:bg-card hover:border-foreground/20 transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-500 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <ShieldAlert className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Gemini 2.5 Forensics</h3>
+              <p className="text-muted-foreground">Every uploaded image is instantly processed by multimodal AI to determine material composition and ecological severity without human intervention.</p>
+            </motion.div>
+
+            {/* Feature 3 */}
+            <motion.div variants={fadeUp} className="group p-8 rounded-3xl bg-muted/20 border border-border hover:bg-card hover:border-foreground/20 transition-all duration-300">
+              <div className="w-12 h-12 bg-cyan-400 text-background rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Activity className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Tactical Operations</h3>
+              <p className="text-muted-foreground">The Authority Command Center routes interception tasks instantly, turning generalized raw data into actionable physical clearance missions.</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border/40 py-12 text-center text-muted-foreground px-4">
+        <p className="font-semibold text-lg text-foreground mb-2 flex items-center justify-center gap-2">
+          Samudra Sutra <span className="w-1.5 h-1.5 rounded-full bg-blue-500 block"></span> Intelligence
+        </p>
+        <p className="text-sm">Built for extreme-scale environmental preservation.</p>
       </footer>
     </div>
   )

@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
-import { Shield } from 'lucide-react'
+import { Shield, ArrowLeft } from 'lucide-react'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const [password, setPassword] = useState('')
@@ -23,11 +25,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background relative p-4">
+      {/* Absolute top controls */}
+      <div className="absolute top-6 left-6 right-6 flex justify-between items-center">
+        <Link href="/" className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm font-medium">
+           <ArrowLeft className="w-4 h-4" /> Back to Home
+        </Link>
+        <ThemeToggle />
+      </div>
+
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center flex flex-col items-center">
-          <div className="bg-blue-100 dark:bg-blue-900/40 p-3 rounded-full mb-2">
-            <Shield className="w-8 h-8 text-blue-600" />
+          <div className="bg-primary/20 p-3 rounded-full mb-2">
+            <Shield className="w-8 h-8 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">Authority Login</CardTitle>
           <CardDescription>Enter the default admin password</CardDescription>
@@ -43,7 +53,7 @@ export default function LoginPage() {
               />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Sign In</Button>
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">Sign In</Button>
             
              <p className="text-xs text-muted-foreground text-center mt-4">
                 This is a mock authority portal bypassing DB auth. <br/>

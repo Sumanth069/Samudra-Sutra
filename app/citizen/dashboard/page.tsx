@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button'
 import { Camera, MapPin, UploadCloud, AlertCircle, CheckCircle2, RefreshCw, Trophy, LayoutDashboard, History, LogOut } from 'lucide-react'
 import Link from 'next/link'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 import { db } from '@/lib/firebase/client'
 import { collection, addDoc, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
@@ -235,6 +236,7 @@ export default function CitizenDashboard() {
                  {credits} Credits
                </div>
             </div>
+            <ThemeToggle />
             <Button variant="ghost" size="sm" asChild className="hidden sm:flex hover:bg-destructive/10 hover:text-destructive" onClick={() => localStorage.removeItem('citizen_email')}>
                <Link href="/"><LogOut className="h-4 w-4 mr-2" /> Sign Out</Link>
             </Button>

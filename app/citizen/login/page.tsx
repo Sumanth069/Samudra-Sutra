@@ -39,40 +39,43 @@ export default function CitizenLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50/50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-cover bg-center" style={{ backgroundImage: "url('/ocean-bg.jpg')", backgroundColor: 'rgba(255,255,255,0.9)', backgroundBlendMode: 'lighten' }}>
-      <div className="sm:mx-auto sm:w-full sm:max-w-md backdrop-blur-sm relative z-10 transition-all duration-500 ease-out transform translate-y-0 opacity-100">
+    <div className="min-h-screen bg-background flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Decorative background gradients */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-500/10 blur-[120px]" />
+
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 transition-all duration-500 ease-out transform translate-y-0 opacity-100">
         <div className="flex justify-center mb-6">
-          <div className="bg-blue-600 p-3 rounded-2xl shadow-lg ring-4 ring-blue-600/20">
-            <Waves className="h-10 w-10 text-white" />
+          <div className="bg-primary p-3 rounded-2xl shadow-lg ring-4 ring-primary/20">
+            <Waves className="h-10 w-10 text-primary-foreground" />
           </div>
         </div>
-        <h2 className="text-center text-3xl font-extrabold text-blue-900 mb-2 tracking-tight">Citizen Portal</h2>
-        <p className="text-center text-sm text-blue-600 mb-8 font-medium">Earn credits by reporting marine pollution.</p>
+        <h2 className="text-center text-3xl font-extrabold text-foreground mb-2 tracking-tight">Citizen Portal</h2>
+        <p className="text-center text-sm text-primary mb-8 font-medium">Earn credits by reporting marine pollution.</p>
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="absolute inset-0 bg-blue-200 blur-3xl rounded-full opacity-20 transform -translate-y-12"></div>
-        <Card className="border-0 shadow-2xl relative bg-white/95 backdrop-blur-md rounded-2xl overflow-hidden ring-1 ring-black/5">
-          <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+        <Card className="border shadow-xl relative bg-card/60 backdrop-blur-xl rounded-2xl overflow-hidden ring-1 ring-border">
+          <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-blue-400 to-cyan-500"></div>
           <CardHeader className="space-y-1 pb-6 pt-8 px-8">
-            <CardTitle className="text-xl font-bold text-center">Join the network</CardTitle>
+            <CardTitle className="text-xl font-bold text-center text-card-foreground">Join the network</CardTitle>
             <CardDescription className="text-center text-base">Sign in securely with your Google Account.</CardDescription>
           </CardHeader>
           <CardContent className="px-8 pb-8">
             {errorMsg && (
-                <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 text-sm rounded-lg text-center font-medium">
+                <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg text-center font-medium">
                   {errorMsg}
                 </div>
             )}
             <Button 
                 type="button" 
                 variant="outline" 
-                className="w-full font-semibold relative h-14 bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-700 shadow-sm transition-all"
+                className="w-full font-semibold relative h-14 bg-card border-2 border-border hover:bg-muted text-foreground shadow-sm transition-all"
                 onClick={handleGoogleLogin}
                 disabled={loading}
               >
                 {loading ? (
-                    <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 ) : (
                     <>
                         <svg className="h-6 w-6 absolute left-4" viewBox="0 0 24 24">
@@ -87,17 +90,17 @@ export default function CitizenLogin() {
                 )}
             </Button>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4 px-8 pb-8 pt-0 bg-gray-50/50 mt-4 rounded-b-xl border-t border-gray-100">
-            <div className="pt-4 text-center text-sm text-gray-500">
+          <CardFooter className="flex flex-col space-y-4 px-8 pb-8 pt-0 bg-muted/30 mt-4 rounded-b-xl border-t border-border/50">
+            <div className="pt-4 text-center text-sm text-muted-foreground">
               Authority Administrator?{' '}
-              <Link href="/login" className="text-blue-600 hover:text-blue-500 font-semibold hover:underline">
+              <Link href="/login" className="text-primary hover:text-primary/80 font-semibold hover:underline">
                 Login here
               </Link>
             </div>
-            <div className="flex gap-4 text-xs text-gray-400 justify-center">
-              <span className="hover:text-gray-600 cursor-pointer transition-colors">Privacy Policy</span>
+            <div className="flex gap-4 text-xs text-muted-foreground/70 justify-center">
+              <span className="hover:text-foreground cursor-pointer transition-colors">Privacy Policy</span>
               <span>&bull;</span>
-              <span className="hover:text-gray-600 cursor-pointer transition-colors">Terms of Service</span>
+              <span className="hover:text-foreground cursor-pointer transition-colors">Terms of Service</span>
             </div>
           </CardFooter>
         </Card>
