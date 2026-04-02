@@ -15,8 +15,8 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     if (password === 'admin123') {
-      document.cookie = "dummy-admin=true; path=/;"
-      router.push('/admin/dashboard')
+      document.cookie = "dummy-admin=true; path=/; max-age=86400"
+      window.location.href = '/admin/dashboard'
     } else {
       setError('Invalid password. Try admin123')
     }
