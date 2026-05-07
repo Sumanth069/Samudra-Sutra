@@ -34,7 +34,7 @@ export default function DashboardPage() {
   // Fetch all data
   const { data: weather, loading: weatherLoading } = useWeatherData()
   const { data: marine, loading: marineLoading } = useMarineData()
-  const { reports, loading: pollutionLoading, refetch: refetchPollution } = usePollutionData()
+  const { reports, loading: pollutionLoading, refetch: refetchPollution } = usePollutionData(weather)
   const { alerts, stats: alertStats, loading: alertsLoading, acknowledgeAlert, refetch: refetchAlerts } = useAlerts()
   const systemStats = useSystemStats()
 

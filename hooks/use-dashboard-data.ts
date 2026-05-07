@@ -11,6 +11,7 @@ import type {
 } from '@/lib/types'
 import { db } from '@/lib/firebase/client'
 import { collection, query, getDocs } from 'firebase/firestore'
+import { predictWasteFlow } from '@/lib/flow-engine'
 
 const REFRESH_INTERVAL = 30000 // 30 seconds for non-realtime API fallbacks
 
@@ -145,7 +146,7 @@ const BASE_REPORTS: PollutionReport[] = [
     }
 ]
 
-export function usePollutionData() {
+export function usePollutionData(weather: WeatherData | null = null) {
   const [reports, setReports] = useState<PollutionReport[]>(BASE_REPORTS)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -168,30 +169,41 @@ export function usePollutionData() {
         
         const parsed: PollutionReport[] = querySnapshot.docs.map(doc => {
            const r = doc.data()
+           const lat = r.location?.lat || 19.0760
+           const lon = r.location?.lon || 72.8777
+           
+           // Run through our new hydrological engine
+           const prediction = predictWasteFlow(lat, lon, weather)
+
            return {
              id: doc.id,
              type: r.type || 'waste',
              severity: r.severity || 'low',
              location: {
-                lat: r.location?.lat || 19.0,
-                lon: r.location?.lon || 72.8,
-                name: 'Gemini Satellite Verification',
-                zone: 'Urban'
+                lat: lat,
+                lon: lon,
+                name: r.location?.name || prediction.snappedBasin + ' Region',
+                zone: r.location?.zone || 'Urban'
              },
              source: r.source_email || 'citizen',
              estimatedVolume: r.estimatedVolume || 100,
              riskIndex: r.riskIndex || 50,
-             flowPath: [],
+             flowPath: prediction.flowPath,
              reportedAt: r.reportedAt || new Date().toISOString(),
              updatedAt: r.updatedAt || new Date().toISOString(),
              status: r.status || 'active',
-             etaToOcean: r.etaToOcean || 2,
+             etaToOcean: prediction.etaToOcean,
              etaToRiver: 0,
              imageUrl: r.imageUrl || undefined
            }
         })
         
-        const combined = [...parsed, ...BASE_REPORTS]
+        const dynamicBaseReports = BASE_REPORTS.map(br => {
+           const p = predictWasteFlow(br.location.lat, br.location.lon, weather)
+           return { ...br, flowPath: p.flowPath, etaToOcean: p.etaToOcean }
+        })
+        
+        const combined = [...parsed, ...dynamicBaseReports]
         setReports(combined)
         
         let criticalCount = 0; let highCount = 0; let mediumCount = 0; let lowCount = 0;
@@ -212,7 +224,12 @@ export function usePollutionData() {
             activeIncidents: activeCount
         }))
       } catch (e) {
-         // Silently fail if rules are blocking
+         // If Firebase fails (e.g. permission denied on local), we MUST still run the simulation on the base reports!
+         const dynamicBaseReports = BASE_REPORTS.map(br => {
+           const p = predictWasteFlow(br.location.lat, br.location.lon, weather)
+           return { ...br, flowPath: p.flowPath, etaToOcean: p.etaToOcean }
+         })
+         setReports(dynamicBaseReports)
       }
     }
 
@@ -220,7 +237,7 @@ export function usePollutionData() {
     const interval = setInterval(fetchCitizenData, 5000)
     
     return () => clearInterval(interval)
-  }, [])
+  }, [weather])
 
   const refetch = useCallback(() => {}, [])
   return { reports, summary, loading, error, refetch }

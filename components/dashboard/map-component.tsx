@@ -18,20 +18,7 @@ interface MapComponentProps {
 
 const MUMBAI_CENTER: [number, number] = [19.0760, 72.8777]
 
-// --- River Simulation Engine ---
-const MUMBAI_RIVERS = [
-  { id: 'mithi', name: 'Mithi River', coords: [[19.141, 72.894], [19.112, 72.879], [19.065, 72.853], [19.043, 72.834]] },
-  { id: 'dahisar', name: 'Dahisar River', coords: [[19.231, 72.884], [19.245, 72.855], [19.252, 72.825]] },
-  { id: 'poisar', name: 'Poisar River', coords: [[19.201, 72.864], [19.205, 72.835], [19.192, 72.815]] },
-  { id: 'oshiwara', name: 'Oshiwara River', coords: [[19.155, 72.854], [19.145, 72.835], [19.132, 72.815]] },
-  { id: 'ulhas', name: 'Ulhas River', coords: [[19.233, 73.133], [19.266, 73.083], [19.299, 72.983]] },
-  { id: 'vaitarna', name: 'Vaitarna River', coords: [[19.550, 73.050], [19.520, 72.950], [19.490, 72.850]] },
-  { id: 'tansa', name: 'Tansa River', coords: [[19.450, 73.000], [19.420, 72.900], [19.390, 72.800]] },
-  { id: 'kamothe', name: 'Kamothe Creek', coords: [[19.010, 73.100], [19.020, 73.050], [19.030, 73.000]] },
-  { id: 'panvel', name: 'Panvel Creek', coords: [[18.980, 73.110], [18.990, 73.040], [18.950, 72.950]] },
-  { id: 'thane', name: 'Thane Creek', coords: [[19.180, 72.980], [19.130, 72.950], [19.080, 72.980]] }
-] as { id: string; name: string; coords: [number, number][] }[]
-
+// Removed static MUMBAI_RIVERS logic as it is now calculated dynamically in the flow-engine
 function getPartialPath(coords: [number, number][], progress: number): [number, number][] {
   if (progress <= 0) return [coords[0]]
   if (progress >= 1) return coords
@@ -68,33 +55,39 @@ function getPartialPath(coords: [number, number][], progress: number): [number, 
   return partial
 }
 
-function SimulationPath({ coords, timeOffset }: { coords: [number, number][], timeOffset: number }) {
-  // Map 0-48 hours to 0-1 progress
-  const progress = Math.min(1, Math.max(0, timeOffset / 48))
+function SimulationPath({ coords, timeOffset, eta, severity }: { coords: [number, number][], timeOffset: number, eta: number, severity: string }) {
+  // Map timeOffset against dynamic ETA to ocean
+  const progress = Math.min(1, Math.max(0, eta > 0 ? timeOffset / eta : 1))
   
-  if (progress === 0) return null
+  if (progress === 0 || coords.length === 0) return null
 
   const partial = getPartialPath(coords, progress)
   const tip = partial[partial.length - 1]
   
-  // Dispersion aura grows massively up to 8x scale across the hours
-  const radius = 5 + (progress * 25)
+  // Dispersion aura grows massive as waste spreads near ocean
+  const radius = 5 + (progress * 30)
+
+  // Color mapping based on severity
+  const color = severity === 'critical' ? '#ef4444' 
+              : severity === 'high' ? '#f59e0b'
+              : severity === 'medium' ? '#3b82f6'
+              : '#22c55e'
 
   return (
     <React.Fragment>
       <Polyline 
         positions={partial}
-        pathOptions={{ color: '#0ea5e9', weight: 4, lineCap: 'round', lineJoin: 'round' }}
+        pathOptions={{ color: color, weight: 4, lineCap: 'round', lineJoin: 'round', opacity: 0.8 }}
       />
       <CircleMarker 
         center={tip}
         radius={radius}
-        pathOptions={{ color: 'transparent', fillColor: '#0ea5e9', fillOpacity: 0.2 }}
+        pathOptions={{ color: 'transparent', fillColor: color, fillOpacity: 0.25 }}
       />
       <CircleMarker 
         center={tip}
-        radius={4}
-        pathOptions={{ color: '#fff', fillColor: '#0ea5e9', fillOpacity: 1, weight: 2 }}
+        radius={6}
+        pathOptions={{ color: '#fff', fillColor: color, fillOpacity: 1, weight: 2 }}
       />
     </React.Fragment>
   )
@@ -131,11 +124,14 @@ export default function MapComponent({ reports, alerts, timeOffset, loading, onS
           attribution='&copy; <a href="https://carto.com/">CartoDB</a>'
         />
 
-        {/* Live River Flow Simulations */}
-        {MUMBAI_RIVERS.map((river) => (
-           <SimulationPath key={'sim_'+river.id} coords={river.coords} timeOffset={timeOffset} />
-        ))}
-
+        {/* Dynamic Simulated Waste Flow based on actual citizen reports */}
+        {reports.map((report) => {
+           if (report.flowPath && report.flowPath.length > 0) {
+              const coords = report.flowPath.map(p => [p.lat, p.lon] as [number, number])
+              return <SimulationPath key={'sim_'+report.id} coords={coords} timeOffset={timeOffset} eta={report.etaToOcean || 24} severity={report.severity} />
+           }
+           return null
+        })}
         {reports.map((report) => {
           const isCritical = report.severity === 'critical'
           const color = isCritical ? '#ef4444' 
